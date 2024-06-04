@@ -1,0 +1,22 @@
+package med.voll.api.endereco;
+
+import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Embeddable //informa que é uma classe usada em outra
+@Getter //gera (em tempo de execução) todos os getters
+@NoArgsConstructor //gera (em tempo de execução) um construtor que não recebe nenhum argumento
+@AllArgsConstructor //gera (em tempo de execução) um construtor que recebe todos os argumentos
+public class Endereco {
+
+    private String logradouro;
+    private String bairro;
+    private String cep;
+    private String numero;
+    private String complemento;
+    private String cidade;
+    private String uf;
+
+}
