@@ -6,10 +6,10 @@ import med.voll.api.medico.DadosListagemMedicos;
 import med.voll.api.medico.Medico;
 import med.voll.api.medico.MedicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("medicos")
@@ -25,7 +25,7 @@ public class MedicoController {
     }
 
     @GetMapping //anotação para pegar informação
-    public List<DadosListagemMedicos> listar() {
-        return repository.findAll().stream().map(DadosListagemMedicos::new).toList(); //findAll retorna Medico, então pegamos e mapeamos para converter em uma lista de DadosListagemMedico
+    public Page<DadosListagemMedicos> listar(Pageable paginacao) { //Page já é um objeto que retorna a lista e informações de paginação, e o objeto Pageable como parâmetro vai garantir que haja a paginação
+        return repository.findAll(paginacao).map(DadosListagemMedicos::new); //findAll retorna um Page de Medico, então pegamos e mapeamos para converter para DadosListagemMedico
     }
 }
