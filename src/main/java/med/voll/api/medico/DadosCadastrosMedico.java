@@ -16,6 +16,8 @@ public record DadosCadastrosMedico(
         @Email //uso de bin validation para verificar se o conteúdo do parâmetro abaixo é um email
         String email,
         @NotBlank
+        String telefone,
+        @NotBlank
         @Pattern(regexp = "\\d{4,6}") //uso de bin validation para verificar se o conteúdo do parâmetro abaixo está na difinição da expressão relugar. Nesse caso, dígitos (\\d), de 4 a 6 numeros
         String crm,
         @NotNull
