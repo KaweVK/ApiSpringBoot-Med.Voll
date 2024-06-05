@@ -1,5 +1,6 @@
 package med.voll.api.controler;
 
+import jakarta.validation.Valid;
 import med.voll.api.medico.DadosCadastrosMedico;
 import med.voll.api.medico.Medico;
 import med.voll.api.medico.MedicoRepository;
@@ -19,7 +20,7 @@ public class MedicoController {
 
     @PostMapping //post é para enviar na api
     @Transactional
-    public void cadastrar(@RequestBody DadosCadastrosMedico dados) { //RequestBody é pra dizer que tem que o parâmetro vai puxar o corpo inteiro da requisição
+    public void cadastrar(@RequestBody @Valid DadosCadastrosMedico dados) { //RequestBody é pra dizer que tem que o parâmetro vai puxar o corpo inteiro da requisição
         repository.save(new Medico(dados)); //método para salvar
     }
 
