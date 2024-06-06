@@ -24,7 +24,7 @@ public class MedicoController {
 
     @GetMapping //anotação para pegar informação
     public Page<DadosListagemMedicos> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) { //Page já é um objeto que retorna a lista e informações de paginação, e o objeto Pageable como parâmetro vai garantir que haja a paginação. A anotação Pageabledefault serve para que seja definida um padrão próprio para nossa api
-        return repository.findAll(paginacao).map(DadosListagemMedicos::new); //findAll retorna um Page de Medico, então pegamos e mapeamos para converter para DadosListagemMedico
+        return repository.findAllByAtivoTrue(paginacao).map(DadosListagemMedicos::new); //findAllByAtivoTrue retorna um Page de Medico que tenha a column Ativo como True, então pegamos e mapeamos para converter para DadosListagemMedico
     }
 
     @PutMapping //anotação para atualizar informação
@@ -37,6 +37,7 @@ public class MedicoController {
     @DeleteMapping("/{id}") //anotação para excluir, e dentro dos parênteses eu posso colocar a parte da url dinâmica, sendo entre chaves para que ele saiba que vai ser um número
     @Transactional
     public void excluir(@PathVariable Long id) { //PathVariable é uma anotação que diz que o parâmetro deve ser retirado da url
-        repository.deleteById(id);
+        var medico = repository.getReferenceById(id);
+        medico.excluir(); //chamo o método que setta ativo como false
     }
 }

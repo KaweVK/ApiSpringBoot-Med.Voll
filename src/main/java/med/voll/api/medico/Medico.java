@@ -31,7 +31,10 @@ public class Medico {
     @Embedded //fica numa classe separada, mas os seus campos fazem parte da mesma tabela de medicos
     private Endereco endereco;
 
+    private boolean ativo;
+
     public Medico(DadosCadastrosMedico dados) {
+        this.ativo = true;
         this.nome = dados.nome();
         this.email = dados.email();
         this.telefone = dados.telefone();
@@ -50,5 +53,9 @@ public class Medico {
         if (dados.endereco() != null) {
             this.endereco.atualizarInformacoes(dados.endereco());
         }
+    }
+
+    public void excluir() {
+        this.ativo = false;
     }
 }
