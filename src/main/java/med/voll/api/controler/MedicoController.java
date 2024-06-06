@@ -17,7 +17,7 @@ public class MedicoController {
     private MedicoRepository repository;
 
     @PostMapping //anotação para enviar/cadastrar na api
-    @Transactional //anotação para dizer que há uma troca de dados sendo feita
+    @Transactional //anotação para dizer que há uma escrita de dados sendo feita
     public void cadastrar(@RequestBody @Valid DadosCadastrosMedico dados) { //RequestBody é pra dizer que tem que o parâmetro vai puxar o corpo inteiro da requisição
         repository.save(new Medico(dados)); //método para salvar
     }
@@ -34,4 +34,9 @@ public class MedicoController {
         medico.atualizarInformacoes(dados); //aqui chamo os métodos necessários para que seja atualizado
     }
 
+    @DeleteMapping("/{id}") //anotação para excluir, e dentro dos parênteses eu posso colocar a parte da url dinâmica, sendo entre chaves para que ele saiba que vai ser um número
+    @Transactional
+    public void excluir(@PathVariable Long id) { //PathVariable é uma anotação que diz que o parâmetro deve ser retirado da url
+        repository.deleteById(id);
+    }
 }
