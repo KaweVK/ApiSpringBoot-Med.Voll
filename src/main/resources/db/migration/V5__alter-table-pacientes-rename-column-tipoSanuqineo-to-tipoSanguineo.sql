@@ -1,0 +1,1 @@
+alter table pacientes rename column tipoSanquineo to tipoSanguineo
