@@ -52,4 +52,10 @@ public class MedicoController {
 
         return ResponseEntity.noContent().build(); //Retornando ResponseEntity, podemos devolver um códigop diferente do 200 em cada situação. No content é o código 204, e o build retorna um objeto ResponseEntity
     }
+
+    @GetMapping("/{id}") //anotação para excluir, e dentro dos parênteses eu posso colocar a parte da url dinâmica, sendo entre chaves para que ele saiba que vai ser um número
+    public ResponseEntity detalhar(@PathVariable Long id) { //PathVariable é uma anotação que diz que o parâmetro deve ser retirado da url
+        var medico = repository.getReferenceById(id);
+        return ResponseEntity.ok(new DadosDetalhamentoMedico(medico)); //Retornando ResponseEntity, podemos devolver um códigop diferente do 200 em cada situação. No content é o código 204, e o build retorna um objeto ResponseEntity
+    }
 }
