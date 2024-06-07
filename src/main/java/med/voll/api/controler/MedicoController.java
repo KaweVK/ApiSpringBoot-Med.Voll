@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,21 +24,27 @@ public class MedicoController {
     }
 
     @GetMapping //anotação para pegar informação
-    public Page<DadosListagemMedicos> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) { //Page já é um objeto que retorna a lista e informações de paginação, e o objeto Pageable como parâmetro vai garantir que haja a paginação. A anotação Pageabledefault serve para que seja definida um padrão próprio para nossa api
-        return repository.findAllByAtivoTrue(paginacao).map(DadosListagemMedicos::new); //findAllByAtivoTrue retorna um Page de Medico que tenha a column Ativo como True, então pegamos e mapeamos para converter para DadosListagemMedico
+    public ResponseEntity<Page<DadosListagemMedicos>> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) { //Page já é um objeto que retorna a lista e informações de paginação, e o objeto Pageable como parâmetro vai garantir que haja a paginação. A anotação Pageabledefault serve para que seja definida um padrão próprio para nossa api
+        var page = repository.findAllByAtivoTrue(paginacao).map(DadosListagemMedicos::new); //findAllByAtivoTrue retorna um Page de Medico que tenha a column Ativo como True, então pegamos e mapeamos para converter para DadosListagemMedico
+
+        return ResponseEntity.ok(page);
     }
 
     @PutMapping //anotação para atualizar informação
     @Transactional
-    public void atualizar(@RequestBody @Valid DadosAtualizacaoMedico dados) {
+    public ResponseEntity atualizar(@RequestBody @Valid DadosAtualizacaoMedico dados) {
         var medico = repository.getReferenceById(dados.id()); //aqui eu pego o objeto ao qual o id referencia
         medico.atualizarInformacoes(dados); //aqui chamo os métodos necessários para que seja atualizado
+
+        return ResponseEntity.ok(new DadosDetalhamentoMedico(medico)); //ok é código 200
     }
 
     @DeleteMapping("/{id}") //anotação para excluir, e dentro dos parênteses eu posso colocar a parte da url dinâmica, sendo entre chaves para que ele saiba que vai ser um número
     @Transactional
-    public void excluir(@PathVariable Long id) { //PathVariable é uma anotação que diz que o parâmetro deve ser retirado da url
+    public ResponseEntity excluir(@PathVariable Long id) { //PathVariable é uma anotação que diz que o parâmetro deve ser retirado da url
         var medico = repository.getReferenceById(id);
         medico.excluir(); //chamo o método que setta ativo como false
+
+        return ResponseEntity.noContent().build(); //Retornando ResponseEntity, podemos devolver um códigop diferente do 200 em cada situação. No content é o código 204, e o build retorna um objeto ResponseEntity
     }
 }
