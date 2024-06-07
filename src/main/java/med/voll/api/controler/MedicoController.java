@@ -9,6 +9,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("medicos")
@@ -19,8 +20,12 @@ public class MedicoController {
 
     @PostMapping //anotação para enviar/cadastrar na api
     @Transactional //anotação para dizer que há uma escrita de dados sendo feita
-    public void cadastrar(@RequestBody @Valid DadosCadastrosMedico dados) { //RequestBody é pra dizer que tem que o parâmetro vai puxar o corpo inteiro da requisição
-        repository.save(new Medico(dados)); //método para salvar
+    public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastrosMedico dados, UriComponentsBuilder uribuilder) { //RequestBody é pra dizer que tem que o parâmetro vai puxar o corpo inteiro da requisição
+        var medico = new Medico(dados);
+        repository.save(medico); //método para salvar
+        var uri = uribuilder.path("/medicos/{id}").buildAndExpand(medico.getId()).toUri(); //ruiBuilder cria a uri sem precisar sabermos qual é, basta colocar o complemento específico que identifica que isso deve ocorrer
+
+        return ResponseEntity.created(uri).body(new DadosDetalhamentoMedico(medico)); //código 201 é para registrar um created, e deve devolver os dados do novo recurso/registro criado, e o cabeçaljo do protocolo HTTP chamado location
     }
 
     @GetMapping //anotação para pegar informação
