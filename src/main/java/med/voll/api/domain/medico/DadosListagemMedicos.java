@@ -1,4 +1,4 @@
-package med.voll.api.medico;
+package med.voll.api.domain.medico;
 //dto. Usado para devolver apenas o necessário para a listagem, ou uso do momento
 public record DadosListagemMedicos(Long id, String nome, String email, String crm, Especialidade especialidade) {
 
