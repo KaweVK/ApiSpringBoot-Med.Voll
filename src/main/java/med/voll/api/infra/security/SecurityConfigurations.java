@@ -2,6 +2,7 @@ package med.voll.api.infra.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,6 +20,9 @@ public class SecurityConfigurations { //Aqui vamos colocar as configurações do
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable() //desabilita proteção contra ataques do tipo Cross-Site Request Forgery
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().authorizeRequests()
+                .requestMatchers(HttpMethod.POST, "/login").permitAll() // diz que se houver uma requisição post na url de login, devo autorizar independendte de tudo
+                .anyRequest().authenticated() //de resto, tenho que verificar
                 .and().build();
     }
 

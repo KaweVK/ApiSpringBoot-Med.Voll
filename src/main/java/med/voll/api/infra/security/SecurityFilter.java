@@ -5,7 +5,10 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import med.voll.api.domain.usuario.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,21 +20,30 @@ public class SecurityFilter extends OncePerRequestFilter {//com o OncePer, defin
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private UsuarioRepository repository;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        var tokenJWT = recuperarToken(request);
-        var subject = tokenService.getSubject(tokenJWT);
+        var tokenJWT = recuperarToken(request); //pego o token
+
+        if (tokenJWT != null) {
+            var subject = tokenService.getSubject(tokenJWT); //pego o login do usuario daquele token
+            var usuario = repository.findByLogin(subject);
+
+            var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication); //seto esse usuario como "logado"
+        }
 
         filterChain.doFilter(request, response); //continua o fluxo da requisição
     }
 
     private String recuperarToken(HttpServletRequest request) {
         var authorizationHeader = request.getHeader("Authorization"); //recupera o cabeçalho Authorization
-        if (authorizationHeader == null) {
-            throw new RuntimeException("Token JWT não enviado no cabeçalho");
+        if (authorizationHeader != null) {
+            return authorizationHeader.replace("Bearer ", ""); //retirar o prefixo bearer
         }
-
-        return authorizationHeader.replace("Bearer ", ""); //retirar o prefixo bearer
+        return null;
     }
 
 }

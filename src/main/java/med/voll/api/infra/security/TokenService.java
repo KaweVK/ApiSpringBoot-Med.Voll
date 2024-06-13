@@ -39,7 +39,7 @@ public class TokenService {
                     .withIssuer("API Voll.med")
                     .build()
                     .verify(tokenJWT) // verifica se tá válido
-                    .getSubject(); //pega o usuário
+                    .getSubject(); //pega o usuario
         } catch (JWTVerificationException exception){
             throw new RuntimeException("Token JWT inválido ou expirado");
         }
