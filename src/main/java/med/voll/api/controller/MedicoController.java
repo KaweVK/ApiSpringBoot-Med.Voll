@@ -31,7 +31,6 @@ public class MedicoController {
     @GetMapping //anotação para pegar informação
     public ResponseEntity<Page<DadosListagemMedicos>> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) { //Page já é um objeto que retorna a lista e informações de paginação, e o objeto Pageable como parâmetro vai garantir que haja a paginação. A anotação Pageabledefault serve para que seja definida um padrão próprio para nossa api
         var page = repository.findAllByAtivoTrue(paginacao).map(DadosListagemMedicos::new); //findAllByAtivoTrue retorna um Page de Medico que tenha a column Ativo como True, então pegamos e mapeamos para converter para DadosListagemMedico
-
         return ResponseEntity.ok(page);
     }
 
