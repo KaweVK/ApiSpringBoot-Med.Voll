@@ -1,5 +1,6 @@
 package med.voll.api.infra.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,10 +12,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration //para dizer que é uma classe de configuração e deve ser carregada
 @EnableWebSecurity //indica que vamos personalizar as configurações de segurança
 public class SecurityConfigurations { //Aqui vamos colocar as configurações do Spring Security
+
+    @Autowired
+    private SecurityFilter securityFilter;
 
     @Bean //serve para exportar uma classe para o Spring, fazendo com que ele consiga carregá-la e realize a sua injeção de dependência em outras classes.
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -23,7 +28,8 @@ public class SecurityConfigurations { //Aqui vamos colocar as configurações do
                 .and().authorizeRequests()
                 .requestMatchers(HttpMethod.POST, "/login").permitAll() // diz que se houver uma requisição post na url de login, devo autorizar independendte de tudo
                 .anyRequest().authenticated() //de resto, tenho que verificar
-                .and().build();
+                .and().addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class) //aqui eu digo que o meu filtro deve ser chamado antes do segundo filtro, pois sem isso pode acarentar em erro na nossa aplicação
+                .build();
     }
 
     @Bean
