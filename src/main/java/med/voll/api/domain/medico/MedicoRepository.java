@@ -26,4 +26,12 @@ public interface MedicoRepository extends JpaRepository<Medico, Long> { //JpaRep
             limit 1
             """)//query é usado para implementar consulta no banco de dados
     Medico escolherMedicoAleatorioLivreNaData(Especialidade especialidade, LocalDateTime data);
+
+    @Query("""
+            select m.ativo
+            from Medico m
+            where
+            m.id = :id
+            """) //pega o valor do campo ativo do médico de id passado
+    boolean findAtivoById(Long idMedico);
 }
