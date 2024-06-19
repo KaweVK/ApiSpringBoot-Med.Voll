@@ -2,12 +2,15 @@ package med.voll.api.domain.consulta.validacoes;
 //essas classes de validação servem para que sejam verificadas as regras de negócio da nossa api, deixando mais fácil os testes e correções
 import med.voll.api.domain.ValidacaoException;
 import med.voll.api.domain.consulta.DadosAgendamentoConsulta;
+import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public class ValidadorHorarioDeAntecedencia {
+@Component
+public class ValidadorHorarioDeAntecedencia implements ValidadorAgendamentoDeConsulta {
 
+    @Override
     public void validar(DadosAgendamentoConsulta dados) {
         var dataConsulta = dados.data();
         var dataAgora = LocalDateTime.now();
