@@ -1,11 +1,14 @@
 package med.voll.api.infra.exception;
 
 import jakarta.persistence.EntityNotFoundException;
+import med.voll.api.domain.ValidacaoException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.List;
 
 @RestControllerAdvice //Indica que é uma classe que vai ser rodada automaticamente para tratar quando ocorrer algum erro/exceção nos controllers. É um intercepitor
 public class TratadorDeErros {
@@ -20,6 +23,11 @@ public class TratadorDeErros {
         var erros = ex.getFieldErrors();
 
         return ResponseEntity.badRequest().body(erros.stream().map(DadosErroValidacao::new).toList()); //mapeio erro e faço uma lista
+    }
+
+    @ExceptionHandler(ValidacaoException.class)
+    public ResponseEntity tratarErroRegraDeNegocio(ValidacaoException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
     private record DadosErroValidacao(String campo, String mensagem) { //Um DTO pode ser criado numa classe para ser usado apenas dentro dela
